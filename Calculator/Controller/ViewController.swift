@@ -11,37 +11,34 @@ import UIKit
 class ViewController: UIViewController {
     
     @IBOutlet weak var displayLabel: UILabel!
-    
+  
    
-    var didFinishEdit : Bool = true
+   private var didFinishEdit : Bool = true
+    private var displayValue : Double {
+        get {
+            guard let number = Double(displayLabel.text!) else {
+                fatalError("Could not convert to Double")
+            }
+            return number
+        }
+        set {
+            displayLabel.text = String(newValue)
+        }
+    }
     
+    private var calculator = CalculatorLogic()
     @IBAction func calcButtonPressed(_ sender: UIButton) {
         
         didFinishEdit = true
-        guard let number = Double(displayLabel.text!) else {
-            fatalError("Could not convert to Double")
-        }
-        if var senderTitle = sender.currentTitle {
-            
-            switch senderTitle {
-            case "AC":
-                displayLabel.text = "0"
-                senderTitle = "C"
-                break
-            case "+/-":
-                displayLabel.text = String(number * -1)
-                break
-            case "%":
-                displayLabel.text = String(number * 0.01)
-                break
-            case "C":
-                
-                break
-            default:
-                break
-                
+        calculator.setNumber(displayValue)
+        if let title = sender.currentTitle {
+           
+            if let result = calculator.calculate(with: title) {
+                displayValue = result
             }
+            
         }
+        
     
     }
 
@@ -62,6 +59,7 @@ class ViewController: UIViewController {
                     }
                 }
                 displayLabel.text = displayLabel.text! + numValue
+               
             }
             
         }
